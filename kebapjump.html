@@ -1,98 +1,97 @@
+```html id="jyejv4"
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Dino Game</title>
-    <style>
-        canvas {
-            background: #f4f4f4;
-            display: block;
-            margin: auto;
-        }
-    </style>
-</head>
 
 <body>
 
-    <canvas id="game" width="800" height="200"></canvas>
+    <canvas id="game" width="600" height="200"></canvas>
 
     <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
 
-let dino = {
-  x: 50,
-  y: 150,
-  width: 30,
-  height: 30,
-  dy: 0,
-  gravity: 1,
-  jump: -15,
-  grounded: true
-};
+        let canvas = document.getElementById("game");
+        let ctx = canvas.getContext("2d");
 
-let cactus = {
-  x: 800,
-  y: 160,
-  width: 20,
-  height: 40,
-  speed: 5
-};
+        let dinoY = 150;
+        let speedY = 0;
 
-function drawDino() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
-}
+        let cactusX = 600;
 
-function drawCactus() {
-  ctx.fillStyle = "green";
-  ctx.fillRect(cactus.x, cactus.y, cactus.width, cactus.height);
-}
+        let gravity = 1;
+        let score = 0;
 
-function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let started = false;
+        let gameOver = false;
 
-  // Dino Bewegung
-  dino.y += dino.dy;
-  dino.dy += dino.gravity;
+        function game() {
 
-  if (dino.y >= 150) {
-    dino.y = 150;
-    dino.dy = 0;
-    dino.grounded = true;
-  }
+            ctx.clearRect(0, 0, 600, 200);
 
-  // Kaktus Bewegung
-  cactus.x -= cactus.speed;
-  if (cactus.x < -20) {
-    cactus.x = 800;
-  }
+            if (!started) {
+                ctx.fillText("SPACE drücken zum Start", 200, 100);
+                requestAnimationFrame(game);
+                return;
+            }
 
-  // Kollision
-  if (
-    dino.x < cactus.x + cactus.width &&
-    dino.x + dino.width > cactus.x &&
-    dino.y < cactus.y + cactus.height &&
-    dino.y + dino.height > cactus.y
-  ) {
-    alert("Game Over!");
-    cactus.x = 800;
-  }
+            if (gameOver) {
+                ctx.fillText("Game Over", 260, 100);
+                ctx.fillText("Score: " + score, 260, 130);
+                requestAnimationFrame(game);
+                return;
+            }
 
-  drawDino();
-  drawCactus();
+            speedY += gravity;
+            dinoY += speedY;
 
-  requestAnimationFrame(update);
-}
+            if (dinoY > 150) {
+                dinoY = 150;
+                speedY = 0;
+            }
 
-document.addEventListener("keydown", function(e) {
-  if (e.code === "Space" && dino.grounded) {
-    dino.dy = dino.jump;
-    dino.grounded = false;
-  }
-});
+            cactusX -= 5;
 
-update();
+            if (cactusX < -20) {
+                cactusX = 600;
+                score++;
+            }
+
+            if (50 < cactusX + 20 && 80 > cactusX && dinoY + 30 > 160) {
+                gameOver = true;
+            }
+
+            ctx.fillRect(50, dinoY, 30, 30);
+            ctx.fillRect(cactusX, 160, 20, 40);
+
+            ctx.fillText("Score: " + score, 10, 20);
+
+            requestAnimationFrame(game);
+
+        }
+
+        document.addEventListener("keydown", function (e) {
+
+            if (e.code == "Space") {
+
+                if (!started) {
+                    started = true;
+                    return;
+                }
+
+                if (gameOver) {
+                    location.reload();
+                }
+
+                if (dinoY == 150) {
+                    speedY = -15;
+                }
+
+            }
+
+        });
+
+        game();
+
     </script>
 
 </body>
 </html>
+```
