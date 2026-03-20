@@ -120,5 +120,26 @@
         gameLoop();
     </script>
 
+
+function spawnObstacle() {
+  let type = getRandomObstacle();
+
+  console.log("Spawn:", type);
+
+  switch(type) {
+    case "cactus":
+      // createCactus();
+      break;
+    case "double-cactus":
+      // createDoubleCactus();
+      break;
+    case "bird":
+      // createBird();
+      break;
+  }
+
+  let nextTime = getRandomInterval(1000, 3000);
+  setTimeout(spawnObstacle, nextTime);
+}
 </body>
 </html>
